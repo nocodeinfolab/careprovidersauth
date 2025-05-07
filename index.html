@@ -363,7 +363,7 @@
         </div>
         
         <!-- Sign-Up Form -->
-        <div class="signup-form" id="signupForm">
+        <form class="signup-form" id="signupForm">
             <h2>Provider Application</h2>
             
             <div class="profile-picture">
@@ -392,8 +392,14 @@
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" required>
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" required>
                     </div>
                 </div>
             </div>
@@ -550,7 +556,7 @@
             </div>
             
             <button type="submit" class="submit-btn">Submit Application</button>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -663,7 +669,7 @@
         });
 
         // Form submission
-        submitBtn.addEventListener('click', async (e) => {
+        signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             // Validate form
@@ -677,35 +683,42 @@
                 formData.append('profilePicture', profileUpload.files[0]);
             }
             
-            // Get other form values
+            // Get title and name values
+            const title = document.getElementById('title').value === 'Other' ? 
+                  document.getElementById('otherTitle').value : document.getElementById('title').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            // Prepare provider data with new structure
             const providerData = {
-                title: document.getElementById('title').value === 'Other' ? 
-                      document.getElementById('otherTitle').value : document.getElementById('title').value,
-                fullName: document.getElementById('fullName').value,
+                full_name: `${title} ${firstName} ${lastName}`.trim(),
+                license_number: document.getElementById('license').value,
                 gender: document.getElementById('gender').value === 'Other' ? 
                       document.getElementById('otherGender').value : document.getElementById('gender').value,
                 role: document.getElementById('role').value === 'Other' ? 
                       document.getElementById('otherRole').value : document.getElementById('role').value,
                 specializations: getSpecializations(),
                 experience: document.getElementById('experience').value,
-                license: document.getElementById('license').value,
                 phone: document.getElementById('phone').value,
                 email: document.getElementById('email').value,
-                city: document.getElementById('city').value,
-                state: document.getElementById('state').value,
-                country: document.getElementById('country').value,
+                location: {
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    country: document.getElementById('country').value
+                },
                 languages: getLanguages(),
-                availability: getAvailability(),
+                availability: {
+                    days: Array.from(document.querySelectorAll('.day-select')).map(select => select.value),
+                    time_slot: Array.from(document.querySelectorAll('.time-slot')).map(input => input.value)
+                },
                 bio: document.getElementById('bio').value,
                 status: 'pending'
             };
             
             // Add provider data to formData
             for (const key in providerData) {
-                if (Array.isArray(providerData[key])) {
-                    providerData[key].forEach((item, index) => {
-                        formData.append(`${key}[${index}]`, item);
-                    });
+                if (typeof providerData[key] === 'object' && providerData[key] !== null) {
+                    formData.append(key, JSON.stringify(providerData[key]));
                 } else {
                     formData.append(key, providerData[key]);
                 }
@@ -726,9 +739,36 @@
                 // Show success message
                 alert('Application submitted successfully! We will review your information and contact you soon.');
                 
-                // Reset form or redirect
+                // Reset form
                 signupForm.reset();
                 profilePreview.style.display = 'none';
+                
+                // Clear dynamic fields
+                while (languagesContainer.children.length > 1) {
+                    languagesContainer.removeChild(languagesContainer.lastChild);
+                }
+                while (availabilityContainer.children.length > 1) {
+                    availabilityContainer.removeChild(availabilityContainer.lastChild);
+                }
+                
+                // Reset first language and availability inputs
+                document.querySelector('.language-input').value = '';
+                document.querySelector('.day-select').value = 'Monday';
+                document.querySelector('.time-slot').value = '';
+                
+                // Hide other inputs
+                document.querySelectorAll('.other-input').forEach(input => {
+                    input.style.display = 'none';
+                    input.required = false;
+                    input.value = '';
+                });
+                
+                // Uncheck all checkboxes
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Show intro page again
                 introPage.style.display = 'block';
                 window.scrollTo(0, 0);
                 
@@ -751,18 +791,10 @@
             return languages;
         }
         
-        function getAvailability() {
-            const availability = Array.from(document.querySelectorAll('.availability-item')).map(item => ({
-                day: item.querySelector('.day-select').value,
-                time: item.querySelector('.time-slot').value
-            }));
-            return availability;
-        }
-        
         function validateForm() {
             // Basic validation - expand as needed
             const requiredFields = [
-                'title', 'fullName', 'gender', 'role', 'experience', 
+                'title', 'firstName', 'lastName', 'gender', 'role', 'experience', 
                 'license', 'phone', 'email', 'city', 'state', 'country', 'bio'
             ];
             

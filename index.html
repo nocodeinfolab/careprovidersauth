@@ -59,7 +59,7 @@
             font-family: 'Playfair Display', serif;
             color: var(--dark-blue);
             margin-bottom: 20px;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
         }
         
         .intro-page p {
@@ -116,7 +116,7 @@
             display: none;
             background-color: var(--white);
             border-radius: 15px;
-            padding: 40px;
+            padding: 30px;
             box-shadow: var(--shadow);
             max-width: 800px;
             margin: 0 auto;
@@ -125,9 +125,9 @@
         .signup-form h2 {
             font-family: 'Playfair Display', serif;
             color: var(--dark-blue);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
         
         .form-group {
@@ -136,12 +136,14 @@
         
         .form-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 20px;
         }
         
         .form-col {
             flex: 1;
+            min-width: 200px;
         }
         
         label {
@@ -220,23 +222,67 @@
             margin-right: 8px;
         }
         
-        .availability-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+        .other-input {
+            margin-top: 10px;
+            display: none;
         }
         
-        .availability-item select {
+        .language-input-group {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .language-input-group input {
             flex: 1;
         }
         
-        .add-availability {
+        .language-input-group button {
+            background: none;
+            border: none;
+            color: var(--sky-blue);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .availability-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .availability-item input {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .availability-hint {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            margin-top: 5px;
+        }
+        
+        .add-btn {
             background: none;
             border: none;
             color: var(--sky-blue);
             cursor: pointer;
             font-weight: 600;
             margin-top: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 1.2rem;
         }
         
         .submit-btn {
@@ -260,13 +306,36 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
+            .intro-page, .signup-form {
+                padding: 25px 20px;
             }
             
+            .intro-page h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-col {
+                min-width: 100%;
+            }
+            
+            .profile-picture-preview {
+                width: 120px;
+                height: 120px;
+            }
+        }
+        
+        @media (max-width: 480px) {
             .intro-page, .signup-form {
-                padding: 30px 20px;
+                padding: 20px 15px;
+            }
+            
+            .intro-page h1 {
+                font-size: 1.6rem;
+            }
+            
+            .btn, .submit-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
             }
         }
     </style>
@@ -316,7 +385,9 @@
                             <option value="Mr.">Mr.</option>
                             <option value="Mrs.">Mrs.</option>
                             <option value="Ms.">Ms.</option>
+                            <option value="Other">Other</option>
                         </select>
+                        <input type="text" id="otherTitle" class="other-input" placeholder="Please specify">
                     </div>
                 </div>
                 <div class="form-col">
@@ -337,7 +408,9 @@
                             <option value="Female">Female</option>
                             <option value="Non-binary">Non-binary</option>
                             <option value="Prefer not to say">Prefer not to say</option>
+                            <option value="Other">Other</option>
                         </select>
+                        <input type="text" id="otherGender" class="other-input" placeholder="Please specify">
                     </div>
                 </div>
                 <div class="form-col">
@@ -352,6 +425,7 @@
                             <option value="Social Worker">Social Worker</option>
                             <option value="Other">Other (please specify)</option>
                         </select>
+                        <input type="text" id="otherRole" class="other-input" placeholder="Please specify">
                     </div>
                 </div>
             </div>
@@ -384,6 +458,7 @@
                         <input type="checkbox" name="specialization" value="Other"> Other
                     </label>
                 </div>
+                <input type="text" id="otherSpecialization" class="other-input" placeholder="Please specify">
             </div>
             
             <div class="form-group">
@@ -433,23 +508,14 @@
             </div>
             
             <div class="form-group">
-                <label>Languages Spoken (select all that apply)</label>
-                <div class="checkbox-group" id="languages">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="language" value="English"> English
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="language" value="Spanish"> Spanish
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="language" value="French"> French
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="language" value="German"> German
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="language" value="Other"> Other
-                    </label>
+                <label>Languages Spoken</label>
+                <div id="languagesContainer">
+                    <div class="language-input-group">
+                        <input type="text" class="language-input" placeholder="e.g., English">
+                        <button type="button" class="add-language-btn">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -466,14 +532,14 @@
                             <option value="Saturday">Saturday</option>
                             <option value="Sunday">Sunday</option>
                         </select>
-                        <select class="time-select">
-                            <option value="Morning (8am-12pm)">Morning (8am-12pm)</option>
-                            <option value="Afternoon (12pm-5pm)">Afternoon (12pm-5pm)</option>
-                            <option value="Evening (5pm-9pm)">Evening (5pm-9pm)</option>
-                        </select>
+                        <input type="text" class="time-slot" placeholder="e.g., 8am-9am">
+                        <button type="button" class="remove-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
-                <button type="button" class="add-availability" id="addAvailability">
+                <p class="availability-hint">Please enter time slots in format like "8am-9am" or "2pm-3pm"</p>
+                <button type="button" class="add-btn" id="addAvailability">
                     <i class="fas fa-plus"></i> Add Another Time Slot
                 </button>
             </div>
@@ -487,29 +553,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
-
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
         // DOM Elements
         const introPage = document.getElementById('introPage');
         const signupForm = document.getElementById('signupForm');
@@ -518,6 +562,7 @@
         const profilePreview = document.getElementById('profilePreview');
         const addAvailabilityBtn = document.getElementById('addAvailability');
         const availabilityContainer = document.getElementById('availabilityContainer');
+        const languagesContainer = document.getElementById('languagesContainer');
         const submitBtn = document.querySelector('.submit-btn');
 
         // Proceed to form
@@ -540,6 +585,51 @@
             }
         });
 
+        // Show "Other" input fields when "Other" is selected
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    const otherInput = document.getElementById(`other${this.id.charAt(0).toUpperCase() + this.id.slice(1)}`);
+                    if (otherInput) {
+                        otherInput.style.display = 'block';
+                        otherInput.required = true;
+                    }
+                } else {
+                    const otherInput = document.getElementById(`other${this.id.charAt(0).toUpperCase() + this.id.slice(1)}`);
+                    if (otherInput) {
+                        otherInput.style.display = 'none';
+                        otherInput.required = false;
+                    }
+                }
+            });
+        });
+
+        // Specialization "Other" checkbox
+        document.querySelector('input[name="specialization"][value="Other"]').addEventListener('change', function() {
+            document.getElementById('otherSpecialization').style.display = this.checked ? 'block' : 'none';
+            document.getElementById('otherSpecialization').required = this.checked;
+        });
+
+        // Add language field
+        languagesContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-language-btn')) {
+                const newLanguageGroup = document.createElement('div');
+                newLanguageGroup.className = 'language-input-group';
+                newLanguageGroup.innerHTML = `
+                    <input type="text" class="language-input" placeholder="e.g., Spanish">
+                    <button type="button" class="remove-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                languagesContainer.appendChild(newLanguageGroup);
+            } else if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
+                const groupToRemove = e.target.closest('.language-input-group');
+                if (groupToRemove && languagesContainer.children.length > 1) {
+                    groupToRemove.remove();
+                }
+            }
+        });
+
         // Add availability slot
         addAvailabilityBtn.addEventListener('click', () => {
             const newItem = document.createElement('div');
@@ -554,21 +644,22 @@
                     <option value="Saturday">Saturday</option>
                     <option value="Sunday">Sunday</option>
                 </select>
-                <select class="time-select">
-                    <option value="Morning (8am-12pm)">Morning (8am-12pm)</option>
-                    <option value="Afternoon (12pm-5pm)">Afternoon (12pm-5pm)</option>
-                    <option value="Evening (5pm-9pm)">Evening (5pm-9pm)</option>
-                </select>
-                <button type="button" class="remove-availability">
+                <input type="text" class="time-slot" placeholder="e.g., 8am-9am">
+                <button type="button" class="remove-btn">
                     <i class="fas fa-times"></i>
                 </button>
             `;
             availabilityContainer.appendChild(newItem);
-            
-            // Add event listener to remove button
-            newItem.querySelector('.remove-availability').addEventListener('click', () => {
-                newItem.remove();
-            });
+        });
+
+        // Remove availability slot
+        availabilityContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
+                const itemToRemove = e.target.closest('.availability-item');
+                if (itemToRemove && availabilityContainer.children.length > 1) {
+                    itemToRemove.remove();
+                }
+            }
         });
 
         // Form submission
@@ -580,13 +671,22 @@
                 return;
             }
             
-            // Get form values
+            // Prepare form data
+            const formData = new FormData();
+            if (profileUpload.files[0]) {
+                formData.append('profilePicture', profileUpload.files[0]);
+            }
+            
+            // Get other form values
             const providerData = {
-                title: document.getElementById('title').value,
+                title: document.getElementById('title').value === 'Other' ? 
+                      document.getElementById('otherTitle').value : document.getElementById('title').value,
                 fullName: document.getElementById('fullName').value,
-                gender: document.getElementById('gender').value,
-                role: document.getElementById('role').value,
-                specializations: Array.from(document.querySelectorAll('input[name="specialization"]:checked')).map(el => el.value),
+                gender: document.getElementById('gender').value === 'Other' ? 
+                      document.getElementById('otherGender').value : document.getElementById('gender').value,
+                role: document.getElementById('role').value === 'Other' ? 
+                      document.getElementById('otherRole').value : document.getElementById('role').value,
+                specializations: getSpecializations(),
                 experience: document.getElementById('experience').value,
                 license: document.getElementById('license').value,
                 phone: document.getElementById('phone').value,
@@ -594,43 +694,43 @@
                 city: document.getElementById('city').value,
                 state: document.getElementById('state').value,
                 country: document.getElementById('country').value,
-                languages: Array.from(document.querySelectorAll('input[name="language"]:checked')).map(el => el.value),
-                availability: Array.from(document.querySelectorAll('.availability-item')).map(item => ({
-                    day: item.querySelector('.day-select').value,
-                    time: item.querySelector('.time-select').value
-                })),
+                languages: getLanguages(),
+                availability: getAvailability(),
                 bio: document.getElementById('bio').value,
-                status: 'pending', // Application status
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                status: 'pending'
             };
             
-            try {
-                // Create user with email and password
-                const userCredential = await auth.createUserWithEmailAndPassword(
-                    providerData.email,
-                    generateTempPassword() // Implement this function
-                );
-                
-                // Upload profile picture if exists
-                if (profileUpload.files[0]) {
-                    const file = profileUpload.files[0];
-                    const filePath = `provider_profiles/${userCredential.user.uid}/${file.name}`;
-                    const fileRef = storage.ref(filePath);
-                    await fileRef.put(file);
-                    providerData.profilePicture = await fileRef.getDownloadURL();
+            // Add provider data to formData
+            for (const key in providerData) {
+                if (Array.isArray(providerData[key])) {
+                    providerData[key].forEach((item, index) => {
+                        formData.append(`${key}[${index}]`, item);
+                    });
+                } else {
+                    formData.append(key, providerData[key]);
                 }
+            }
+            
+            try {
+                // Submit to your backend server
+                const response = await fetch('https://your-render-backend-url/care_providers/signup', {
+                    method: 'POST',
+                    body: formData
+                });
                 
-                // Save provider data to Firestore
-                await db.collection('care_providers').doc(userCredential.user.uid).set(providerData);
-                
-                // Send verification email
-                await userCredential.user.sendEmailVerification();
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to submit application');
+                }
                 
                 // Show success message
                 alert('Application submitted successfully! We will review your information and contact you soon.');
                 
-                // Redirect to thank you page or login
-                window.location.href = 'thank-you.html';
+                // Reset form or redirect
+                signupForm.reset();
+                profilePreview.style.display = 'none';
+                introPage.style.display = 'block';
+                window.scrollTo(0, 0);
                 
             } catch (error) {
                 console.error('Error submitting application:', error);
@@ -638,15 +738,66 @@
             }
         });
         
-        function validateForm() {
-            // Implement form validation logic
-            // Return true if valid, false otherwise
-            return true;
+        function getSpecializations() {
+            const specializations = Array.from(document.querySelectorAll('input[name="specialization"]:checked'))
+                .map(el => el.value === 'Other' ? document.getElementById('otherSpecialization').value : el.value);
+            return specializations;
         }
         
-        function generateTempPassword() {
-            // Implement password generation logic
-            return Math.random().toString(36).slice(-8);
+        function getLanguages() {
+            const languages = Array.from(document.querySelectorAll('.language-input'))
+                .map(input => input.value.trim())
+                .filter(lang => lang !== '');
+            return languages;
+        }
+        
+        function getAvailability() {
+            const availability = Array.from(document.querySelectorAll('.availability-item')).map(item => ({
+                day: item.querySelector('.day-select').value,
+                time: item.querySelector('.time-slot').value
+            }));
+            return availability;
+        }
+        
+        function validateForm() {
+            // Basic validation - expand as needed
+            const requiredFields = [
+                'title', 'fullName', 'gender', 'role', 'experience', 
+                'license', 'phone', 'email', 'city', 'state', 'country', 'bio'
+            ];
+            
+            for (const fieldId of requiredFields) {
+                const element = document.getElementById(fieldId);
+                if (!element.value.trim()) {
+                    alert(`Please fill in the ${fieldId.replace(/([A-Z])/g, ' $1').toLowerCase()} field`);
+                    element.focus();
+                    return false;
+                }
+            }
+            
+            // Validate at least one specialization
+            if (getSpecializations().length === 0) {
+                alert('Please select at least one area of specialization');
+                return false;
+            }
+            
+            // Validate at least one language
+            if (getLanguages().length === 0) {
+                alert('Please enter at least one language');
+                return false;
+            }
+            
+            // Validate availability time slots format
+            const timeSlots = document.querySelectorAll('.time-slot');
+            for (const slot of timeSlots) {
+                if (!slot.value.match(/^\d{1,2}(am|pm)-\d{1,2}(am|pm)$/i)) {
+                    alert('Please enter time slots in format like "8am-9am" or "2pm-3pm"');
+                    slot.focus();
+                    return false;
+                }
+            }
+            
+            return true;
         }
     </script>
 </body>

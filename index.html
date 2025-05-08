@@ -355,6 +355,17 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .time-slot-group {
+            background-color: var(--light-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .remove-time-slot {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -544,27 +555,77 @@
             
             <div class="form-group">
                 <label>Availability</label>
-                <div id="availabilityContainer">
-                    <div class="availability-item">
-                        <select class="day-select">
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                        </select>
-                        <input type="text" class="time-slot" placeholder="e.g., 8am-9am">
-                        <button type="button" class="remove-btn">
-                            <i class="fas fa-times"></i>
-                        </button>
+                
+                <!-- Days Selection (Checkboxes) -->
+                <div class="form-group">
+                    <label>Available Days (Select all that apply)</label>
+                    <div class="checkbox-group" id="availableDays">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Monday"> Monday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Tuesday"> Tuesday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Wednesday"> Wednesday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Thursday"> Thursday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Friday"> Friday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Saturday"> Saturday
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="available-day" value="Sunday"> Sunday
+                        </label>
                     </div>
                 </div>
-                <p class="availability-hint">Please enter time slots in format like "8am-9am" or "2pm-3pm"</p>
-                <button type="button" class="add-btn" id="addAvailability">
-                    <i class="fas fa-plus"></i> Add Another Time Slot
-                </button>
+                
+                <!-- Time Slots -->
+                <div class="form-group">
+                    <label>Available Time Slots (1-hour intervals)</label>
+                    <div id="timeSlotsContainer">
+                        <div class="time-slot-group">
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <select class="start-time" required>
+                                        <option value="">Start Time</option>
+                                        <!-- Generate time options from 8am to 8pm -->
+                                        ${Array.from({length: 13}, (_, i) => {
+                                            const hour = i + 8;
+                                            const ampm = hour >= 12 ? 'pm' : 'am';
+                                            const displayHour = hour > 12 ? hour - 12 : hour;
+                                            return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
+                                        }).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-col">
+                                    <select class="end-time" required>
+                                        <option value="">End Time</option>
+                                        <!-- Generate time options from 9am to 9pm -->
+                                        ${Array.from({length: 13}, (_, i) => {
+                                            const hour = i + 9;
+                                            const ampm = hour >= 12 ? 'pm' : 'am';
+                                            const displayHour = hour > 12 ? hour - 12 : hour;
+                                            return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
+                                        }).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-col" style="flex: 0 0 auto;">
+                                    <button type="button" class="remove-btn remove-time-slot">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-btn" id="addTimeSlot">
+                        <i class="fas fa-plus"></i> Add Another Time Slot
+                    </button>
+                </div>
             </div>
             
             <div class="form-group">
@@ -777,14 +838,17 @@
             const days = [];
             const time_slots = [];
             
-            const daySelects = document.querySelectorAll('.day-select');
-            const timeSlotInputs = document.querySelectorAll('.time-slot');
+            // Get selected days
+            document.querySelectorAll('input[name="available-day"]:checked').forEach(checkbox => {
+                days.push(checkbox.value);
+            });
             
-            daySelects.forEach((select, index) => {
-                const timeSlot = timeSlotInputs[index].value.trim();
-                if (timeSlot) {
-                    days.push(select.value);
-                    time_slots.push(timeSlot);
+            // Get time slots
+            document.querySelectorAll('.time-slot-group').forEach(group => {
+                const start = group.querySelector('.start-time').value;
+                const end = group.querySelector('.end-time').value;
+                if (start && end) {
+                    time_slots.push(`${start}-${end}`);
                 }
             });
             
@@ -793,6 +857,78 @@
                 time_slots: time_slots
             };
         }
+
+        // Time slot management
+        document.getElementById('addTimeSlot').addEventListener('click', () => {
+            const newSlot = document.createElement('div');
+            newSlot.className = 'time-slot-group';
+            newSlot.innerHTML = `
+                <div class="form-row">
+                    <div class="form-col">
+                        <select class="start-time" required>
+                            <option value="">Start Time</option>
+                            ${Array.from({length: 13}, (_, i) => {
+                                const hour = i + 8;
+                                const ampm = hour >= 12 ? 'pm' : 'am';
+                                const displayHour = hour > 12 ? hour - 12 : hour;
+                                return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
+                            }).join('')}
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <select class="end-time" required>
+                            <option value="">End Time</option>
+                            ${Array.from({length: 13}, (_, i) => {
+                                const hour = i + 9;
+                                const ampm = hour >= 12 ? 'pm' : 'am';
+                                const displayHour = hour > 12 ? hour - 12 : hour;
+                                return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
+                            }).join('')}
+                        </select>
+                    </div>
+                    <div class="form-col" style="flex: 0 0 auto;">
+                        <button type="button" class="remove-btn remove-time-slot">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('timeSlotsContainer').appendChild(newSlot);
+        });
+
+        // Remove time slot
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-time-slot') || e.target.closest('.remove-time-slot')) {
+                const slotToRemove = e.target.closest('.time-slot-group');
+                if (slotToRemove && document.querySelectorAll('.time-slot-group').length > 1) {
+                    slotToRemove.remove();
+                }
+            }
+        });
+
+        // Validate time slots (end time must be after start time)
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('start-time') || e.target.classList.contains('end-time')) {
+                const group = e.target.closest('.time-slot-group');
+                const start = group.querySelector('.start-time');
+                const end = group.querySelector('.end-time');
+                
+                if (start.value && end.value) {
+                    // Simple validation - in production you'd want more robust time comparison
+                    const startHour = parseInt(start.value) || (start.value.includes('12') ? 12 : 0);
+                    const endHour = parseInt(end.value) || (end.value.includes('12') ? 12 : 0);
+                    const startIsPM = start.value.includes('pm') && !start.value.includes('12');
+                    const endIsPM = end.value.includes('pm') && !end.value.includes('12');
+                    
+                    if ((startIsPM && !endIsPM) || 
+                        (startIsPM === endIsPM && endHour <= startHour)) {
+                        alert('End time must be after start time');
+                        end.value = '';
+                    }
+                }
+            }
+        });
+
         
         function resetForm() {
             signupForm.reset();

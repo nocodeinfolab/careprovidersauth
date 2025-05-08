@@ -339,6 +339,37 @@
             }
         }
 
+        .day-availability {
+            background-color: var(--light-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .day-title {
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .time-slot-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .time-slot-row select {
+            flex: 1;
+            min-width: 120px;
+        }
+
         /* Add loading spinner style */
         .spinner {
             display: none;
@@ -557,8 +588,12 @@
                 <label>Availability</label>
                 
                 <!-- Days Selection (Checkboxes) -->
+                                
                 <div class="form-group">
-                    <label>Available Days (Select all that apply)</label>
+                    <label>Availability</label>
+                    <div id="daysAvailabilityContainer">
+                        <!-- Days will be added here when selected -->
+                    </div>
                     <div class="checkbox-group" id="availableDays">
                         <label class="checkbox-item">
                             <input type="checkbox" name="available-day" value="Monday"> Monday
@@ -583,6 +618,7 @@
                         </label>
                     </div>
                 </div>
+>
                 
                 <!-- Time Slots -->
                 <div class="form-group">
@@ -719,6 +755,199 @@
             }
         });
 
+        // Day selection management
+        document.getElementById('availableDays').addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                const day = e.target.value;
+                const isChecked = e.target.checked;
+                
+                if (isChecked) {
+                    addDayAvailability(day);
+                } else {
+                    removeDayAvailability(day);
+                }
+            }
+        });
+
+        function addDayAvailability(day) {
+            const container = document.getElementById('daysAvailabilityContainer');
+            
+            // Check if this day already exists
+            if (document.getElementById(`day-${day}`)) return;
+            
+            const dayElement = document.createElement('div');
+            dayElement.className = 'day-availability';
+            dayElement.id = `day-${day}`;
+            dayElement.innerHTML = `
+                <div class="day-header">
+                    <div class="day-title">${day}</div>
+                    <button type="button" class="remove-btn remove-day" data-day="${day}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="time-slots-container" id="time-slots-${day}">
+                    <div class="time-slot-row">
+                        <select class="start-time" data-day="${day}" required>
+                            <option value="">Start Time</option>
+                            <option value="8:00 AM">8:00 AM</option>
+                            <option value="9:00 AM">9:00 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="1:00 PM">1:00 PM</option>
+                            <option value="2:00 PM">2:00 PM</option>
+                            <option value="3:00 PM">3:00 PM</option>
+                            <option value="4:00 PM">4:00 PM</option>
+                            <option value="5:00 PM">5:00 PM</option>
+                            <option value="6:00 PM">6:00 PM</option>
+                            <option value="7:00 PM">7:00 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                        </select>
+                        <span>to</span>
+                        <input type="text" class="end-time" readonly>
+                        <button type="button" class="remove-btn remove-time-slot">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="add-btn add-time-slot-btn" data-day="${day}">
+                    <i class="fas fa-plus"></i> Add Time Slot
+                </button>
+            `;
+            
+            container.appendChild(dayElement);
+            
+            // Set up event listeners for this day's elements
+            setupDayEventListeners(day);
+        }
+
+        function removeDayAvailability(day) {
+            const element = document.getElementById(`day-${day}`);
+            if (element) {
+                element.remove();
+            }
+            // Uncheck the checkbox
+            const checkbox = document.querySelector(`input[name="available-day"][value="${day}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+
+        function setupDayEventListeners(day) {
+            // Start time change handler
+            document.querySelectorAll(`.start-time[data-day="${day}"]`).forEach(el => {
+                el.addEventListener('change', function() {
+                    if (this.value) {
+                        const endTimeInput = this.closest('.time-slot-row').querySelector('.end-time');
+                        const startTime = this.value;
+                        const endTime = calculateEndTime(startTime);
+                        endTimeInput.value = endTime;
+                    }
+                });
+            });
+            
+            // Add time slot button
+            document.querySelector(`.add-time-slot-btn[data-day="${day}"]`).addEventListener('click', function() {
+                addTimeSlotToDay(day);
+            });
+            
+            // Remove day button
+            document.querySelector(`.remove-day[data-day="${day}"]`).addEventListener('click', function() {
+                removeDayAvailability(day);
+            });
+        }
+
+        function addTimeSlotToDay(day) {
+            const container = document.getElementById(`time-slots-${day}`);
+            const newSlot = document.createElement('div');
+            newSlot.className = 'time-slot-row';
+            newSlot.innerHTML = `
+                <select class="start-time" data-day="${day}" required>
+                    <option value="">Start Time</option>
+                    <option value="8:00 AM">8:00 AM</option>
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="12:00 PM">12:00 PM</option>
+                    <option value="1:00 PM">1:00 PM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                    <option value="6:00 PM">6:00 PM</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                </select>
+                <span>to</span>
+                <input type="text" class="end-time" readonly>
+                <button type="button" class="remove-btn remove-time-slot">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(newSlot);
+            
+            // Set up event listener for the new start time
+            newSlot.querySelector('.start-time').addEventListener('change', function() {
+                if (this.value) {
+                    const endTimeInput = this.closest('.time-slot-row').querySelector('.end-time');
+                    const startTime = this.value;
+                    const endTime = calculateEndTime(startTime);
+                    endTimeInput.value = endTime;
+                }
+            });
+            
+            // Set up event listener for the remove button
+            newSlot.querySelector('.remove-time-slot').addEventListener('click', function() {
+                // Only remove if there's more than one time slot
+                if (container.querySelectorAll('.time-slot-row').length > 1) {
+                    newSlot.remove();
+                }
+            });
+        }
+
+        function calculateEndTime(startTime) {
+            // Convert start time to 24-hour format for easier calculation
+            const timeParts = startTime.split(' ');
+            const hourMinute = timeParts[0].split(':');
+            let hour = parseInt(hourMinute[0]);
+            const minute = hourMinute[1];
+            const period = timeParts[1];
+            
+            if (period === 'PM' && hour !== 12) {
+                hour += 12;
+            } else if (period === 'AM' && hour === 12) {
+                hour = 0;
+            }
+            
+            // Add one hour
+            hour += 1;
+            
+            // Convert back to 12-hour format
+            let newPeriod = 'AM';
+            if (hour >= 12) {
+                newPeriod = 'PM';
+                if (hour > 12) {
+                    hour -= 12;
+                }
+            }
+            if (hour === 0) {
+                hour = 12;
+            }
+            
+            return `${hour}:${minute} ${newPeriod}`;
+        }
+
+        // Remove time slot event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-time-slot') || e.target.closest('.remove-time-slot')) {
+                const slotRow = e.target.closest('.time-slot-row');
+                const container = slotRow.parentElement;
+                if (container.querySelectorAll('.time-slot-row').length > 1) {
+                    slotRow.remove();
+                }
+            }
+        });
+
         // Form submission
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -798,129 +1027,50 @@
                 spinner.style.display = 'none';
             }
         });
-        
+
         // Helper functions
         function getSpecializations() {
             const specializations = Array.from(document.querySelectorAll('input[name="specialization"]:checked'))
                 .map(el => el.value === 'Other' ? document.getElementById('otherSpecialization').value : el.value);
             return specializations;
         }
-        
+
         function getLanguages() {
             const languages = Array.from(document.querySelectorAll('.language-input'))
                 .map(input => input.value.trim())
                 .filter(lang => lang !== '');
             return languages;
         }
-        
+
         function getAvailability() {
-            const days = [];
-            const time_slots = [];
+            const availability = [];
             
-            // Get selected days
-            document.querySelectorAll('input[name="available-day"]:checked').forEach(checkbox => {
-                days.push(checkbox.value);
-            });
-            
-            // Get time slots
-            document.querySelectorAll('.time-slot-group').forEach(group => {
-                const start = group.querySelector('.start-time').value;
-                const end = group.querySelector('.end-time').value;
-                if (start && end) {
-                    time_slots.push(`${start}-${end}`);
-                }
-            });
-            
-            return {
-                days: days,
-                time_slots: time_slots
-            };
-        }
-
-        // Time slot management
-        document.getElementById('addTimeSlot').addEventListener('click', () => {
-            const newSlot = document.createElement('div');
-            newSlot.className = 'time-slot-group';
-            newSlot.innerHTML = `
-                <div class="form-row">
-                    <div class="form-col">
-                        <select class="start-time" required>
-                            <option value="">Start Time</option>
-                            <option value="8am">8:00 AM</option>
-                            <option value="9am">9:00 AM</option>
-                            <option value="10am">10:00 AM</option>
-                            <option value="11am">11:00 AM</option>
-                            <option value="12pm">12:00 PM</option>
-                            <option value="1pm">1:00 PM</option>
-                            <option value="2pm">2:00 PM</option>
-                            <option value="3pm">3:00 PM</option>
-                            <option value="4pm">4:00 PM</option>
-                            <option value="5pm">5:00 PM</option>
-                            <option value="6pm">6:00 PM</option>
-                            <option value="7pm">7:00 PM</option>
-                            <option value="8pm">8:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="form-col">
-                        <select class="end-time" required>
-                            <option value="">End Time</option>
-                            <option value="9am">9:00 AM</option>
-                            <option value="10am">10:00 AM</option>
-                            <option value="11am">11:00 AM</option>
-                            <option value="12pm">12:00 PM</option>
-                            <option value="1pm">1:00 PM</option>
-                            <option value="2pm">2:00 PM</option>
-                            <option value="3pm">3:00 PM</option>
-                            <option value="4pm">4:00 PM</option>
-                            <option value="5pm">5:00 PM</option>
-                            <option value="6pm">6:00 PM</option>
-                            <option value="7pm">7:00 PM</option>
-                            <option value="8pm">8:00 PM</option>
-                            <option value="9pm">9:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="form-col" style="flex: 0 0 auto;">
-                        <button type="button" class="remove-btn remove-time-slot">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('timeSlotsContainer').appendChild(newSlot);
-        });
-
-        // Remove time slot
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-time-slot') || e.target.closest('.remove-time-slot')) {
-                const slotToRemove = e.target.closest('.time-slot-group');
-                if (slotToRemove && document.querySelectorAll('.time-slot-group').length > 1) {
-                    slotToRemove.remove();
-                }
-            }
-        });
-
-        // Validate time slots (end time must be after start time)
-        document.addEventListener('change', (e) => {
-            if (e.target.classList.contains('start-time') || e.target.classList.contains('end-time')) {
-                const group = e.target.closest('.time-slot-group');
-                const start = group.querySelector('.start-time');
-                const end = group.querySelector('.end-time');
+            document.querySelectorAll('.day-availability').forEach(dayElement => {
+                const day = dayElement.id.replace('day-', '');
+                const timeSlots = [];
                 
-                if (start.value && end.value) {
-                    // Simple validation - in production you'd want more robust time comparison
-                    const startHour = parseInt(start.value) || (start.value.includes('12') ? 12 : 0);
-                    const endHour = parseInt(end.value) || (end.value.includes('12') ? 12 : 0);
-                    const startIsPM = start.value.includes('pm') && !start.value.includes('12');
-                    const endIsPM = end.value.includes('pm') && !end.value.includes('12');
+                dayElement.querySelectorAll('.time-slot-row').forEach(row => {
+                    const startTime = row.querySelector('.start-time').value;
+                    const endTime = row.querySelector('.end-time').value;
                     
-                    if ((startIsPM && !endIsPM) || 
-                        (startIsPM === endIsPM && endHour <= startHour)) {
-                        alert('End time must be after start time');
-                        end.value = '';
+                    if (startTime && endTime) {
+                        timeSlots.push({
+                            start: startTime,
+                            end: endTime
+                        });
                     }
+                });
+                
+                if (timeSlots.length > 0) {
+                    availability.push({
+                        day: day,
+                        time_slots: timeSlots
+                    });
                 }
-            }
-        });
+            });
+            
+            return availability;
+        }
 
         function resetForm() {
             signupForm.reset();
@@ -931,16 +1081,13 @@
                 languagesContainer.removeChild(languagesContainer.lastChild);
             }
             
-            // Reset time slots to one default slot
-            const timeSlotsContainer = document.getElementById('timeSlotsContainer');
-            while (timeSlotsContainer.children.length > 1) {
-                timeSlotsContainer.removeChild(timeSlotsContainer.lastChild);
-            }
+            // Reset availability
+            document.getElementById('daysAvailabilityContainer').innerHTML = '';
             
-            // Reset first time slot to empty
-            const firstTimeSlot = timeSlotsContainer.querySelector('.time-slot-group');
-            firstTimeSlot.querySelector('.start-time').value = '';
-            firstTimeSlot.querySelector('.end-time').value = '';
+            // Uncheck all day checkboxes
+            document.querySelectorAll('input[name="available-day"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
             
             // Reset first language input
             document.querySelector('.language-input').value = '';

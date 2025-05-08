@@ -781,8 +781,8 @@
             daySelects.forEach((select, index) => {
                 if (timeSlots[index].value.trim()) {
                     availability.push({
-                        day: select.value,
-                        time: timeSlots[index].value.trim()
+                        days: select.value,
+                        time_slots: timeSlots[index].value.trim()
                     });
                 }
             });

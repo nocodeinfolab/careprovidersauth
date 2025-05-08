@@ -656,7 +656,6 @@
         const proceedBtn = document.getElementById('proceedBtn');
         const profileUpload = document.getElementById('profileUpload');
         const profilePreview = document.getElementById('profilePreview');
-        const availabilityContainer = document.getElementById('availabilityContainer');
         const languagesContainer = document.getElementById('languagesContainer');
         const spinner = document.createElement('div');
         spinner.className = 'spinner';
@@ -716,37 +715,6 @@
                 const groupToRemove = e.target.closest('.language-input-group');
                 if (groupToRemove && languagesContainer.children.length > 1) {
                     groupToRemove.remove();
-                }
-            }
-        });
-
-        // Availability management
-        addAvailabilityBtn?.addEventListener('click', () => {
-            const newItem = document.createElement('div');
-            newItem.className = 'availability-item';
-            newItem.innerHTML = `
-                <select class="day-select">
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
-                <input type="text" class="time-slot" placeholder="e.g., 8am-9am">
-                <button type="button" class="remove-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            availabilityContainer?.appendChild(newItem);
-        });
-
-        availabilityContainer?.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
-                const itemToRemove = e.target.closest('.availability-item');
-                if (itemToRemove && availabilityContainer.children.length > 1) {
-                    itemToRemove.remove();
                 }
             }
         });
@@ -954,7 +922,6 @@
             }
         });
 
-        
         function resetForm() {
             signupForm.reset();
             profilePreview.style.display = 'none';

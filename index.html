@@ -246,25 +246,6 @@
             cursor: pointer;
         }
         
-        .availability-item {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-        
-        .availability-item input {
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .availability-hint {
-            font-size: 0.85rem;
-            color: var(--medium-gray);
-            margin-top: 5px;
-        }
-        
         .add-btn {
             background: none;
             border: none;
@@ -304,41 +285,7 @@
             color: var(--white);
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .intro-page, .signup-form {
-                padding: 25px 20px;
-            }
-            
-            .intro-page h1 {
-                font-size: 1.8rem;
-            }
-            
-            .form-col {
-                min-width: 100%;
-            }
-            
-            .profile-picture-preview {
-                width: 120px;
-                height: 120px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .intro-page, .signup-form {
-                padding: 20px 15px;
-            }
-            
-            .intro-page h1 {
-                font-size: 1.6rem;
-            }
-            
-            .btn, .submit-btn {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
-        }
-
+        /* Availability Section */
         .day-availability {
             background-color: var(--light-blue);
             padding: 15px;
@@ -358,6 +305,10 @@
             color: var(--dark-blue);
         }
 
+        .time-slots-container {
+            margin-bottom: 10px;
+        }
+
         .time-slot-row {
             display: flex;
             gap: 10px;
@@ -370,7 +321,16 @@
             min-width: 120px;
         }
 
-        /* Add loading spinner style */
+        .time-slot-row .end-time {
+            flex: 1;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        /* Loading Spinner */
         .spinner {
             display: none;
             width: 40px;
@@ -386,16 +346,48 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .intro-page, .signup-form {
+                padding: 25px 20px;
+            }
+            
+            .intro-page h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-col {
+                min-width: 100%;
+            }
+            
+            .profile-picture-preview {
+                width: 120px;
+                height: 120px;
+            }
 
-        .time-slot-group {
-            background-color: var(--light-blue);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            .time-slot-row {
+                flex-wrap: wrap;
+            }
+
+            .time-slot-row select {
+                min-width: 100%;
+            }
         }
         
-        .remove-time-slot {
-            margin-top: 10px;
+        @media (max-width: 480px) {
+            .intro-page, .signup-form {
+                padding: 20px 15px;
+            }
+            
+            .intro-page h1 {
+                font-size: 1.6rem;
+            }
+            
+            .btn, .submit-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -586,93 +578,31 @@
             
             <div class="form-group">
                 <label>Availability</label>
-                
-                <!-- Days Selection (Checkboxes) -->
-                                
-                <div class="form-group">
-                    <label>Availability</label>
-                    <div id="daysAvailabilityContainer">
-                        <!-- Days will be added here when selected -->
-                    </div>
-                    <div class="checkbox-group" id="availableDays">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Monday"> Monday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Tuesday"> Tuesday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Wednesday"> Wednesday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Thursday"> Thursday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Friday"> Friday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Saturday"> Saturday
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="available-day" value="Sunday"> Sunday
-                        </label>
-                    </div>
+                <div id="daysAvailabilityContainer">
+                    <!-- Days will be added here when selected -->
                 </div>
->
-                
-                <!-- Time Slots -->
-                <div class="form-group">
-                    <label>Available Time Slots (1-hour intervals)</label>
-                    <div id="timeSlotsContainer">
-                        <div class="time-slot-group">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <select class="start-time" required>
-                                        <option value="">Start Time</option>
-                                        <option value="8am">8:00 AM</option>
-                                        <option value="9am">9:00 AM</option>
-                                        <option value="10am">10:00 AM</option>
-                                        <option value="11am">11:00 AM</option>
-                                        <option value="12pm">12:00 PM</option>
-                                        <option value="1pm">1:00 PM</option>
-                                        <option value="2pm">2:00 PM</option>
-                                        <option value="3pm">3:00 PM</option>
-                                        <option value="4pm">4:00 PM</option>
-                                        <option value="5pm">5:00 PM</option>
-                                        <option value="6pm">6:00 PM</option>
-                                        <option value="7pm">7:00 PM</option>
-                                        <option value="8pm">8:00 PM</option>
-                                    </select>
-                                </div>
-                                <div class="form-col">
-                                    <select class="end-time" required>
-                                        <option value="">End Time</option>
-                                        <option value="9am">9:00 AM</option>
-                                        <option value="10am">10:00 AM</option>
-                                        <option value="11am">11:00 AM</option>
-                                        <option value="12pm">12:00 PM</option>
-                                        <option value="1pm">1:00 PM</option>
-                                        <option value="2pm">2:00 PM</option>
-                                        <option value="3pm">3:00 PM</option>
-                                        <option value="4pm">4:00 PM</option>
-                                        <option value="5pm">5:00 PM</option>
-                                        <option value="6pm">6:00 PM</option>
-                                        <option value="7pm">7:00 PM</option>
-                                        <option value="8pm">8:00 PM</option>
-                                        <option value="9pm">9:00 PM</option>
-                                    </select>
-                                </div>
-                                <div class="form-col" style="flex: 0 0 auto;">
-                                    <button type="button" class="remove-btn remove-time-slot">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="add-btn" id="addTimeSlot">
-                        <i class="fas fa-plus"></i> Add Another Time Slot
-                    </button>
+                <div class="checkbox-group" id="availableDays">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Monday"> Monday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Tuesday"> Tuesday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Wednesday"> Wednesday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Thursday"> Thursday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Friday"> Friday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Saturday"> Saturday
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="available-day" value="Sunday"> Sunday
+                    </label>
                 </div>
             </div>
             
@@ -693,19 +623,44 @@
         const profileUpload = document.getElementById('profileUpload');
         const profilePreview = document.getElementById('profilePreview');
         const languagesContainer = document.getElementById('languagesContainer');
+        const daysAvailabilityContainer = document.getElementById('daysAvailabilityContainer');
+        const availableDaysCheckboxes = document.querySelectorAll('input[name="available-day"]');
+
+        // Create and add loading spinner
         const spinner = document.createElement('div');
         spinner.className = 'spinner';
         signupForm.appendChild(spinner);
 
-        // Proceed to form
-        proceedBtn.addEventListener('click', () => {
-            introPage.style.display = 'none';
-            signupForm.style.display = 'block';
-            window.scrollTo(0, 0);
-        });
+        // Initialize the form
+        function initForm() {
+            // Proceed to form
+            proceedBtn.addEventListener('click', () => {
+                introPage.style.display = 'none';
+                signupForm.style.display = 'block';
+                window.scrollTo(0, 0);
+            });
 
-        // Profile picture upload
-        profileUpload.addEventListener('change', (e) => {
+            // Profile picture upload
+            profileUpload.addEventListener('change', handleProfileUpload);
+
+            // Show "Other" input fields for select elements
+            setupOtherInputFields();
+
+            // Specialization "Other" checkbox
+            setupSpecializationOther();
+
+            // Language fields management
+            setupLanguageFields();
+
+            // Day availability management
+            setupDayAvailability();
+
+            // Form submission
+            signupForm.addEventListener('submit', handleFormSubmit);
+        }
+
+        // Profile picture upload handler
+        function handleProfileUpload(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -715,63 +670,124 @@
                 };
                 reader.readAsDataURL(file);
             }
-        });
+        }
 
-        // Show "Other" input fields
-        document.querySelectorAll('select').forEach(select => {
-            select.addEventListener('change', function() {
-                const otherInputId = `other${this.id.charAt(0).toUpperCase() + this.id.slice(1)}`;
-                const otherInput = document.getElementById(otherInputId);
-                if (otherInput) {
-                    otherInput.style.display = this.value === 'Other' ? 'block' : 'none';
-                    if (this.value !== 'Other') otherInput.value = '';
+        // Setup other input fields that appear when "Other" is selected
+        function setupOtherInputFields() {
+            document.querySelectorAll('select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const otherInputId = `other${this.id.charAt(0).toUpperCase() + this.id.slice(1)}`;
+                    const otherInput = document.getElementById(otherInputId);
+                    if (otherInput) {
+                        otherInput.style.display = this.value === 'Other' ? 'block' : 'none';
+                        if (this.value !== 'Other') otherInput.value = '';
+                    }
+                });
+            });
+        }
+
+        // Setup specialization "Other" checkbox
+        function setupSpecializationOther() {
+            const otherSpecializationCheckbox = document.querySelector('input[name="specialization"][value="Other"]');
+            if (otherSpecializationCheckbox) {
+                otherSpecializationCheckbox.addEventListener('change', function() {
+                    const otherInput = document.getElementById('otherSpecialization');
+                    otherInput.style.display = this.checked ? 'block' : 'none';
+                    if (!this.checked) otherInput.value = '';
+                });
+            }
+        }
+
+        // Setup language fields with add/remove functionality
+        function setupLanguageFields() {
+            languagesContainer.addEventListener('click', function(e) {
+                // Add new language field
+                if (e.target.classList.contains('add-language-btn') || e.target.closest('.add-language-btn')) {
+                    addLanguageField();
+                } 
+                // Remove language field
+                else if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
+                    const groupToRemove = e.target.closest('.language-input-group');
+                    if (groupToRemove && languagesContainer.children.length > 1) {
+                        groupToRemove.remove();
+                    }
                 }
             });
-        });
 
-        // Specialization "Other" checkbox
-        document.querySelector('input[name="specialization"][value="Other"]')?.addEventListener('change', function() {
-            document.getElementById('otherSpecialization').style.display = this.checked ? 'block' : 'none';
-            if (!this.checked) document.getElementById('otherSpecialization').value = '';
-        });
-
-        // Language fields management
-        languagesContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('add-language-btn') || e.target.closest('.add-language-btn')) {
-                const newLanguageGroup = document.createElement('div');
-                newLanguageGroup.className = 'language-input-group';
-                newLanguageGroup.innerHTML = `
-                    <input type="text" class="language-input" placeholder="e.g., Spanish">
-                    <button type="button" class="remove-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                languagesContainer.appendChild(newLanguageGroup);
-            } else if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
-                const groupToRemove = e.target.closest('.language-input-group');
-                if (groupToRemove && languagesContainer.children.length > 1) {
-                    groupToRemove.remove();
-                }
+            // Add initial language field if none exists
+            if (languagesContainer.children.length === 0) {
+                addLanguageField();
             }
-        });
+        }
 
-        // Day selection management
-        document.getElementById('availableDays').addEventListener('change', function(e) {
-            if (e.target.type === 'checkbox') {
-                const day = e.target.value;
-                const isChecked = e.target.checked;
-                
-                if (isChecked) {
-                    addDayAvailability(day);
-                } else {
+        function addLanguageField() {
+            const newLanguageGroup = document.createElement('div');
+            newLanguageGroup.className = 'language-input-group';
+            newLanguageGroup.innerHTML = `
+                <input type="text" class="language-input" placeholder="e.g., Spanish">
+                <button type="button" class="remove-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            languagesContainer.appendChild(newLanguageGroup);
+        }
+
+        // Setup day availability with time slots
+        function setupDayAvailability() {
+            // Handle day checkbox changes
+            availableDaysCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        addDayAvailability(this.value);
+                    } else {
+                        removeDayAvailability(this.value);
+                    }
+                });
+            });
+
+            // Handle remove day button clicks via event delegation
+            daysAvailabilityContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-day') || e.target.closest('.remove-day')) {
+                    const day = e.target.dataset.day;
                     removeDayAvailability(day);
+                    // Uncheck the corresponding checkbox
+                    const checkbox = document.querySelector(`input[name="available-day"][value="${day}"]`);
+                    if (checkbox) checkbox.checked = false;
                 }
-            }
-        });
+            });
+
+            // Handle time slot operations via event delegation
+            daysAvailabilityContainer.addEventListener('click', function(e) {
+                // Add time slot
+                if (e.target.classList.contains('add-time-slot-btn') || e.target.closest('.add-time-slot-btn')) {
+                    const day = e.target.dataset.day;
+                    addTimeSlotToDay(day);
+                }
+                // Remove time slot
+                else if (e.target.classList.contains('remove-time-slot') || e.target.closest('.remove-time-slot')) {
+                    const slotRow = e.target.closest('.time-slot-row');
+                    const container = slotRow.parentElement;
+                    // Only remove if there's more than one time slot
+                    if (container.querySelectorAll('.time-slot-row').length > 1) {
+                        slotRow.remove();
+                    }
+                }
+            });
+
+            // Handle start time changes to auto-fill end time
+            daysAvailabilityContainer.addEventListener('change', function(e) {
+                if (e.target.classList.contains('start-time')) {
+                    const startTime = e.target.value;
+                    if (startTime) {
+                        const endTimeInput = e.target.closest('.time-slot-row').querySelector('.end-time');
+                        const endTime = calculateEndTime(startTime);
+                        endTimeInput.value = endTime;
+                    }
+                }
+            });
+        }
 
         function addDayAvailability(day) {
-            const container = document.getElementById('daysAvailabilityContainer');
-            
             // Check if this day already exists
             if (document.getElementById(`day-${day}`)) return;
             
@@ -815,10 +831,7 @@
                 </button>
             `;
             
-            container.appendChild(dayElement);
-            
-            // Set up event listeners for this day's elements
-            setupDayEventListeners(day);
+            daysAvailabilityContainer.appendChild(dayElement);
         }
 
         function removeDayAvailability(day) {
@@ -826,35 +839,6 @@
             if (element) {
                 element.remove();
             }
-            // Uncheck the checkbox
-            const checkbox = document.querySelector(`input[name="available-day"][value="${day}"]`);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-        }
-
-        function setupDayEventListeners(day) {
-            // Start time change handler
-            document.querySelectorAll(`.start-time[data-day="${day}"]`).forEach(el => {
-                el.addEventListener('change', function() {
-                    if (this.value) {
-                        const endTimeInput = this.closest('.time-slot-row').querySelector('.end-time');
-                        const startTime = this.value;
-                        const endTime = calculateEndTime(startTime);
-                        endTimeInput.value = endTime;
-                    }
-                });
-            });
-            
-            // Add time slot button
-            document.querySelector(`.add-time-slot-btn[data-day="${day}"]`).addEventListener('click', function() {
-                addTimeSlotToDay(day);
-            });
-            
-            // Remove day button
-            document.querySelector(`.remove-day[data-day="${day}"]`).addEventListener('click', function() {
-                removeDayAvailability(day);
-            });
         }
 
         function addTimeSlotToDay(day) {
@@ -885,131 +869,50 @@
                 </button>
             `;
             container.appendChild(newSlot);
-            
-            // Set up event listener for the new start time
-            newSlot.querySelector('.start-time').addEventListener('change', function() {
-                if (this.value) {
-                    const endTimeInput = this.closest('.time-slot-row').querySelector('.end-time');
-                    const startTime = this.value;
-                    const endTime = calculateEndTime(startTime);
-                    endTimeInput.value = endTime;
-                }
-            });
-            
-            // Set up event listener for the remove button
-            newSlot.querySelector('.remove-time-slot').addEventListener('click', function() {
-                // Only remove if there's more than one time slot
-                if (container.querySelectorAll('.time-slot-row').length > 1) {
-                    newSlot.remove();
-                }
-            });
         }
 
         function calculateEndTime(startTime) {
-            // Convert start time to 24-hour format for easier calculation
-            const timeParts = startTime.split(' ');
-            const hourMinute = timeParts[0].split(':');
-            let hour = parseInt(hourMinute[0]);
-            const minute = hourMinute[1];
-            const period = timeParts[1];
+            // Convert start time to 24-hour format for calculation
+            const [time, period] = startTime.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
             
-            if (period === 'PM' && hour !== 12) {
-                hour += 12;
-            } else if (period === 'AM' && hour === 12) {
-                hour = 0;
-            }
+            if (period === 'PM' && hours !== 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
             
             // Add one hour
-            hour += 1;
+            hours += 1;
             
             // Convert back to 12-hour format
             let newPeriod = 'AM';
-            if (hour >= 12) {
+            if (hours >= 12) {
                 newPeriod = 'PM';
-                if (hour > 12) {
-                    hour -= 12;
-                }
+                if (hours > 12) hours -= 12;
             }
-            if (hour === 0) {
-                hour = 12;
-            }
+            if (hours === 0) hours = 12;
             
-            return `${hour}:${minute} ${newPeriod}`;
+            // Format minutes with leading zero
+            minutes = minutes.toString().padStart(2, '0');
+            
+            return `${hours}:${minutes} ${newPeriod}`;
         }
 
-        // Remove time slot event delegation
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-time-slot') || e.target.closest('.remove-time-slot')) {
-                const slotRow = e.target.closest('.time-slot-row');
-                const container = slotRow.parentElement;
-                if (container.querySelectorAll('.time-slot-row').length > 1) {
-                    slotRow.remove();
-                }
-            }
-        });
-
-        // Form submission
-        signupForm.addEventListener('submit', async (e) => {
+        // Form submission handler
+        async function handleFormSubmit(e) {
             e.preventDefault();
             spinner.style.display = 'block';
             
             try {
                 // Validate required fields
-                const requiredFields = ['firstName', 'lastName', 'license', 'phone', 'email', 'city', 'state', 'country', 'bio'];
-                const missingFields = requiredFields.filter(field => {
-                    const el = document.getElementById(field);
-                    return !el.value.trim();
-                });
-                
+                const missingFields = validateRequiredFields();
                 if (missingFields.length > 0) {
                     spinner.style.display = 'none';
                     alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
                     return;
                 }
                 
-                // Prepare form data
-                const formData = new FormData();
-                if (profileUpload.files[0]) {
-                    formData.append('profilePicture', profileUpload.files[0]);
-                }
-                
-                // Get form values
-                const title = document.getElementById('title').value === 'Other' ? 
-                    document.getElementById('otherTitle').value : document.getElementById('title').value;
-                const firstName = document.getElementById('firstName').value;
-                const lastName = document.getElementById('lastName').value;
-                
-                // Prepare provider data object
-                const providerData = {
-                    full_name: `${title} ${firstName} ${lastName}`.trim(),
-                    license_number: document.getElementById('license').value,
-                    gender: document.getElementById('gender').value === 'Other' ? 
-                        document.getElementById('otherGender').value : document.getElementById('gender').value,
-                    role: document.getElementById('role').value === 'Other' ? 
-                        document.getElementById('otherRole').value : document.getElementById('role').value,
-                    specializations: getSpecializations(),
-                    years_experience: parseInt(document.getElementById('experience').value) || 0,
-                    phone: document.getElementById('phone').value,
-                    email: document.getElementById('email').value,
-                    location: {
-                        city: document.getElementById('city').value,
-                        state: document.getElementById('state').value,
-                        country: document.getElementById('country').value
-                    },
-                    languages: getLanguages(),
-                    availability: getAvailability(),
-                    bio: document.getElementById('bio').value,
-                    status: 'pending'
-                };
-                
-                // Add provider data to formData as JSON string
-                formData.append('provider', JSON.stringify(providerData));
-                
-                // Submit to backend
-                const response = await fetch('https://firebase-backend-6arf.onrender.com/care_providers/signup', {
-                    method: 'POST',
-                    body: formData
-                });
+                // Prepare and submit form data
+                const formData = prepareFormData();
+                const response = await submitFormData(formData);
                 
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -1026,20 +929,82 @@
             } finally {
                 spinner.style.display = 'none';
             }
-        });
+        }
 
-        // Helper functions
+        function validateRequiredFields() {
+            const requiredFields = ['firstName', 'lastName', 'license', 'phone', 'email', 'city', 'state', 'country', 'bio'];
+            return requiredFields.filter(field => {
+                const el = document.getElementById(field);
+                return !el.value.trim();
+            });
+        }
+
+        function prepareFormData() {
+            const formData = new FormData();
+            
+            // Add profile picture if uploaded
+            if (profileUpload.files[0]) {
+                formData.append('profilePicture', profileUpload.files[0]);
+            }
+            
+            // Prepare provider data
+            const providerData = {
+                full_name: getFullName(),
+                license_number: document.getElementById('license').value,
+                gender: getGender(),
+                role: getRole(),
+                specializations: getSpecializations(),
+                years_experience: parseInt(document.getElementById('experience').value) || 0,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                location: getLocation(),
+                languages: getLanguages(),
+                availability: getAvailability(),
+                bio: document.getElementById('bio').value,
+                status: 'pending'
+            };
+            
+            // Add provider data to formData
+            formData.append('provider', JSON.stringify(providerData));
+            
+            return formData;
+        }
+
+        function getFullName() {
+            const title = document.getElementById('title').value === 'Other' ? 
+                document.getElementById('otherTitle').value : document.getElementById('title').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            return `${title} ${firstName} ${lastName}`.trim();
+        }
+
+        function getGender() {
+            return document.getElementById('gender').value === 'Other' ? 
+                document.getElementById('otherGender').value : document.getElementById('gender').value;
+        }
+
+        function getRole() {
+            return document.getElementById('role').value === 'Other' ? 
+                document.getElementById('otherRole').value : document.getElementById('role').value;
+        }
+
+        function getLocation() {
+            return {
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                country: document.getElementById('country').value
+            };
+        }
+
         function getSpecializations() {
-            const specializations = Array.from(document.querySelectorAll('input[name="specialization"]:checked'))
+            return Array.from(document.querySelectorAll('input[name="specialization"]:checked'))
                 .map(el => el.value === 'Other' ? document.getElementById('otherSpecialization').value : el.value);
-            return specializations;
         }
 
         function getLanguages() {
-            const languages = Array.from(document.querySelectorAll('.language-input'))
+            return Array.from(document.querySelectorAll('.language-input'))
                 .map(input => input.value.trim())
                 .filter(lang => lang !== '');
-            return languages;
         }
 
         function getAvailability() {
@@ -1072,42 +1037,63 @@
             return availability;
         }
 
+        async function submitFormData(formData) {
+            return await fetch('https://firebase-backend-6arf.onrender.com/care_providers/signup', {
+                method: 'POST',
+                body: formData
+            });
+        }
+
         function resetForm() {
             signupForm.reset();
             profilePreview.style.display = 'none';
             
             // Clear dynamic fields
-            while (languagesContainer.children.length > 1) {
-                languagesContainer.removeChild(languagesContainer.lastChild);
-            }
-            
-            // Reset availability
-            document.getElementById('daysAvailabilityContainer').innerHTML = '';
-            
-            // Uncheck all day checkboxes
-            document.querySelectorAll('input[name="available-day"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            
-            // Reset first language input
-            document.querySelector('.language-input').value = '';
-            
-            // Hide other inputs
-            document.querySelectorAll('.other-input').forEach(input => {
-                input.style.display = 'none';
-                input.value = '';
-            });
-            
-            // Uncheck checkboxes
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
+            resetLanguageFields();
+            resetAvailability();
+            resetCheckboxes();
             
             // Show intro page
             introPage.style.display = 'block';
             signupForm.style.display = 'none';
             window.scrollTo(0, 0);
         }
+
+        function resetLanguageFields() {
+            // Remove all language fields except the first one
+            while (languagesContainer.children.length > 1) {
+                languagesContainer.removeChild(languagesContainer.lastChild);
+            }
+            // Clear the first language field
+            const firstLanguageInput = languagesContainer.querySelector('.language-input');
+            if (firstLanguageInput) firstLanguageInput.value = '';
+        }
+
+        function resetAvailability() {
+            // Clear all day availability sections
+            daysAvailabilityContainer.innerHTML = '';
+            
+            // Uncheck all day checkboxes
+            availableDaysCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        function resetCheckboxes() {
+            // Uncheck all checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Hide other inputs
+            document.querySelectorAll('.other-input').forEach(input => {
+                input.style.display = 'none';
+                input.value = '';
+            });
+        }
+
+        // Initialize the form when the page loads
+        document.addEventListener('DOMContentLoaded', initForm);
     </script>
 </body>
 </html>

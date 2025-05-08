@@ -594,24 +594,14 @@
                                     <select class="start-time" required>
                                         <option value="">Start Time</option>
                                         <!-- Generate time options from 8am to 8pm -->
-                                        ${Array.from({length: 13}, (_, i) => {
-                                            const hour = i + 8;
-                                            const ampm = hour >= 12 ? 'pm' : 'am';
-                                            const displayHour = hour > 12 ? hour - 12 : hour;
-                                            return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
-                                        }).join('')}
+                                        
                                     </select>
                                 </div>
                                 <div class="form-col">
                                     <select class="end-time" required>
                                         <option value="">End Time</option>
                                         <!-- Generate time options from 9am to 9pm -->
-                                        ${Array.from({length: 13}, (_, i) => {
-                                            const hour = i + 9;
-                                            const ampm = hour >= 12 ? 'pm' : 'am';
-                                            const displayHour = hour > 12 ? hour - 12 : hour;
-                                            return `<option value="${displayHour}${ampm}">${displayHour}${ampm}</option>`;
-                                        }).join('')}
+                                        
                                     </select>
                                 </div>
                                 <div class="form-col" style="flex: 0 0 auto;">
@@ -644,7 +634,6 @@
         const proceedBtn = document.getElementById('proceedBtn');
         const profileUpload = document.getElementById('profileUpload');
         const profilePreview = document.getElementById('profilePreview');
-        const addAvailabilityBtn = document.getElementById('addAvailability');
         const availabilityContainer = document.getElementById('availabilityContainer');
         const languagesContainer = document.getElementById('languagesContainer');
         const spinner = document.createElement('div');

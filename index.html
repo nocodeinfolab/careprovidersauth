@@ -719,7 +719,7 @@
                     role: document.getElementById('role').value === 'Other' ? 
                         document.getElementById('otherRole').value : document.getElementById('role').value,
                     specializations: getSpecializations(),
-                    years_experience: parseInt(document.getElementById('experience').value) || 0,
+                    experience: parseInt(document.getElementById('experience').value) || 0,
                     phone: document.getElementById('phone').value,
                     email: document.getElementById('email').value,
                     location: {
@@ -774,20 +774,24 @@
         }
         
         function getAvailability() {
-            const availability = [];
+            const days = [];
+            const time_slots = [];
+            
             const daySelects = document.querySelectorAll('.day-select');
-            const timeSlots = document.querySelectorAll('.time-slot');
+            const timeSlotInputs = document.querySelectorAll('.time-slot');
             
             daySelects.forEach((select, index) => {
-                if (timeSlots[index].value.trim()) {
-                    availability.push({
-                        days: select.value,
-                        time_slots: timeSlots[index].value.trim()
-                    });
+                const timeSlot = timeSlotInputs[index].value.trim();
+                if (timeSlot) {
+                    days.push(select.value);
+                    time_slots.push(timeSlot);
                 }
             });
             
-            return availability;
+            return {
+                days: days,
+                time_slots: time_slots
+            };
         }
         
         function resetForm() {
